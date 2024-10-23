@@ -1,0 +1,655 @@
+<html><head><base href="https://filipinonames.websim.io/">
+<title>Filipino Name Generator | Pangalan</title>
+<meta charset="UTF-8">
+<meta lang="en">
+<meta http-equiv="Content-Language" content="en">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:ital@0;1&display=swap');
+
+  :root {
+    --ph-blue: #0038A8;
+    --ph-red: #CE1126;
+    --ph-yellow: #FCD116;
+    --ph-white: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: linear-gradient(135deg, 
+      var(--ph-blue) 0%, 
+      var(--ph-red) 50%,
+      var(--ph-white) 50%,
+      var(--ph-white) 60%,
+      var(--ph-yellow) 60%,
+      var(--ph-yellow) 100%
+    );
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+  }
+
+  .container {
+    max-width: 800px;
+    width: 90%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border: 3px solid var(--ph-blue);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--ph-blue);
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .options {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .gender-select {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .gender-btn {
+    background: var(--ph-white);
+    border: 2px solid var(--ph-blue);
+    color: var(--ph-blue);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .gender-btn.active {
+    background: var(--ph-blue);
+    color: var(--ph-white);
+  }
+
+  button {
+    background: var(--ph-blue);
+    color: var(--ph-white);
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.1em;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  button:hover {
+    background: var(--ph-red);
+    transform: scale(1.05);
+  }
+
+  .name-display {
+    margin: 2em 0;
+    padding: 1em;
+    border: 2px solid var(--ph-yellow);
+    background: linear-gradient(45deg, rgba(0, 56, 168, 0.05), rgba(206, 17, 38, 0.05));
+    border-radius: 10px;
+    font-size: 1.5em;
+    min-height: 100px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .name-symbol {
+    display: block;
+    margin: 0 auto 20px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s ease;
+  }
+
+  .name-symbol.reveal {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .name-part {
+    margin: 10px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+  }
+
+  .name-part.reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .name-part .character {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px) rotate(10deg);
+    animation: popIn 0.5s ease forwards;
+  }
+
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px) rotate(10deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotate(0deg);
+    }
+  }
+
+  .name-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { left: -100% }
+    100% { left: 100% }
+  }
+
+  .meaning {
+    font-size: 0.8em;
+    color: #666;
+    font-style: italic;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    margin-top: 15px;
+  }
+
+  .meaning.reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .trivia {
+    font-size: 0.9em;
+    color: #555;
+    background: rgba(0, 56, 168, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+  }
+
+  .trivia.reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .trivia::before {
+    content: "📖 Did you know?";
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--ph-blue);
+  }
+
+  .life-background {
+    font-size: 0.95em;
+    color: #444;
+    background: rgba(0, 56, 168, 0.03);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    border-left: 3px solid var(--ph-blue);
+  }
+
+  .life-background.reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .life-background::before {
+    content: "🌟 Life Story";
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--ph-blue);
+  }
+
+  .favorite-names {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(252, 209, 22, 0.1);
+    border-radius: 10px;
+  }
+
+  .favorite-names h3 {
+    color: var(--ph-blue);
+    margin-bottom: 10px;
+  }
+
+  .favorites-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .favorite-item {
+    background: white;
+    padding: 5px 15px;
+    border-radius: 15px;
+    border: 1px solid var(--ph-blue);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .remove-favorite {
+    border: none;
+    background: none;
+    color: var(--ph-red);
+    cursor: pointer;
+    padding: 0 5px;
+    font-size: 1.2em;
+  }
+
+  .favorite-btn {
+    background: var(--ph-yellow);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .favorite-btn.reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .favorite-btn:hover {
+    background: var(--ph-red);
+    color: white;
+  }
+
+  .name-photo {
+    max-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 15px auto;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s ease;
+    border: 3px solid var(--ph-blue);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .name-photo.reveal {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>☀️ Filipino Name Generator ☀️</h1>
+  
+  <div class="options">
+    <div class="gender-select">
+      <button class="gender-btn active" data-gender="any">Any Gender</button>
+      <button class="gender-btn" data-gender="male">Male</button>
+      <button class="gender-btn" data-gender="female">Female</button>
+    </div>
+  </div>
+  
+  <button onclick="generateName()">Generate Name</button>
+  
+  <div class="name-display">
+    <svg id="nameSymbol" class="name-symbol" viewBox="0 0 100 100" width="80" height="80">
+      <!-- Face symbol will be drawn here -->
+    </svg>
+    <div class="name-part" id="firstName"></div>
+    <div class="name-part" id="lastName"></div>
+    <img id="namePhoto" class="name-photo" src="" alt="" style="display: none;">
+    <div id="meaning" class="meaning"></div>
+    <div id="trivia" class="trivia"></div>
+    <div id="lifeBackground" class="life-background"></div>
+    <button class="favorite-btn" onclick="addToFavorites()">❤️ Add to Favorites</button>
+  </div>
+
+  <div class="favorite-names">
+    <h3>Favorite Names</h3>
+    <div id="favoritesList" class="favorites-list">
+      <!-- Favorites will be populated here -->
+    </div>
+  </div>
+</div>
+
+<script>
+const firstNames = {
+  male: [
+    {name: "Juan", meaning: "God is gracious", trivia: "Juan is one of the most common Filipino names, influenced by Spanish colonization. It's often paired with 'Dela Cruz' to form the Filipino equivalent of 'John Doe'.", photo: "https://images.websim.io/filipino-names/juan.jpg", photoAlt: "Portrait of a young Filipino man in traditional Barong Tagalog", lifeBackground: "Born into a farming family in Batangas, Juan grew up helping his parents tend to their rice fields. His early life was marked by dedication to family and education, often walking several kilometers to attend school. His perseverance led him to become a respected teacher in his community."},
+    {name: "Miguel", meaning: "Who is like God?", trivia: "Miguel is a name that reflects the strong Catholic influence in Filipino culture, derived from the Archangel Michael.", lifeBackground: "Miguel was raised in a close-knit family in Manila. His family's faith and community service inspired him to become a pastor, guiding others through their spiritual journeys."},
+    {name: "Antonio", meaning: "Priceless one", trivia: "Antonio is often associated with nobility and strength in Filipino culture.", lifeBackground: "Antonio grew up in a privileged household, receiving a top-notch education. He dedicated his life to philanthropy, helping underprivileged children get access to education."},
+    {name: "Andres", meaning: "Manly, brave", trivia: "Andres Bonifacio, a hero of the Philippine revolution, made this name famous.", lifeBackground: "Andres came from humble beginnings in Tondo. Inspired by the ideals of the revolutionaries, he became a leader in advocating for workers' rights and social justice."},
+    {name: "Fernando", meaning: "Adventurous, bold", trivia: "Fernando is often associated with bravery and exploration.", lifeBackground: "From a young age, Fernando dreamed of exploring the world. He became an adventurer, traveling the Philippine archipelago and documenting his experiences."},
+    {name: "Rizal", meaning: "A field where rice is grown", trivia: "Named after the national hero, Dr. Jose Rizal, symbolizing patriotism.", lifeBackground: "Rizal was inspired by the legacy of his namesake, dedicating his life to education and the arts. He worked diligently to elevate the status of Filipino culture."},
+    {name: "Malachi", meaning: "My messenger", trivia: "Malachi is a name used in religious contexts, reflecting faith.", lifeBackground: "Growing up in an environment rich with spiritual teachings, Malachi became a youth pastor, influencing many young lives in his community."},
+    {name: "Bayani", meaning: "Hero", trivia: "The name Bayani symbolizes heroism, often celebrated in stories.", lifeBackground: "Bayani was known for his bravery during times of conflict, using his skills to coordinate community efforts in times of crisis."},
+    {name: "Dakila", meaning: "Great, noble", trivia: "Often used to signify excellence and nobility.", lifeBackground: "Dakila was always a leader among his peers, known for his integrity and commitment to helping others."},
+    {name: "Ernesto", meaning: "Serious, determined", trivia: "This name is linked with leadership and strength of character.", lifeBackground: "With a career in law, Ernesto fought for social justice and was revered as a voice for the voiceless."},
+    {name: "Gabriel", meaning: "God is my strength", trivia: "Reflects deep religious roots and is a popular name.", lifeBackground: "Gabriel grew up in a family of musicians. He used his talents to spread messages of hope and faith through music."},
+    {name: "Teodoro", meaning: "Gift of God", trivia: "A name commonly seen in families with religious values.", lifeBackground: "Teodoro dedicated his life to community service, often helping in local charities and churches."},
+    {name: "Isagani", meaning: "Born free", trivia: "A name that resonates with the spirit of freedom and independence.", lifeBackground: "Isagani advocated for educational reforms and the rights of the indigenous people."},
+    {name: "Lakas", meaning: "Strength", trivia: "Lakas symbolizes resilience and power.", lifeBackground: "Growing up in a tough neighborhood, Lakas turned his challenges into strength, becoming a motivational speaker."}
+  ],
+  female: [
+    {name: "Maria", meaning: "Beloved", trivia: "Maria is traditionally used as a prefix in Filipino female names as a tribute to the Virgin Mary, reflecting the country's deep Catholic roots.", photo: "https://images.websim.io/filipino-names/maria.jpg", photoAlt: "Portrait of a Filipino woman wearing traditional Maria Clara dress", lifeBackground: "Maria comes from a lineage of strong women in Cebu. Her grandmother was a respected midwife, and her mother ran a successful sari-sari store. Growing up by the sea, she learned the value of community and helping others, becoming a nurse who serves in remote villages."},
+    {name: "Rosa", meaning: "Rose", trivia: "Rosa symbolizes beauty and is a popular name across many cultures.", lifeBackground: "In a family of artists, Rosa grew to appreciate beauty in all forms, eventually becoming a renowned florist known for creating breathtaking arrangements."},
+    {name: "Ligaya", meaning: "Happiness", trivia: "Ligaya is a name that evokes feelings of joy and celebration.", lifeBackground: "Ligaya spread joy wherever she went, known for organizing community events that brought families together."},
+    {name: "Mayumi", meaning: "Gentle, elegant", trivia: "Known for representing grace and beauty.", lifeBackground: "Raised in a household that valued the arts, Mayumi became a ballet dancer, inspiring many with her performances."},
+    {name: "Hiraya", meaning: "May your dreams come true", trivia: "Hiraya comes from the ancient Tagalog word meaning 'the fruit of one's hopes, dreams, and aspirations'.", lifeBackground: "Hiraya focused on helping others achieve their dreams through education, setting up workshops in her community."},
+    {name: "Dalisay", meaning: "Pure, genuine", trivia: "This name is often associated with innocence and integrity.", lifeBackground: "Dalisay devoted her life to environmental causes, advocating for sustainable living in her village."},
+    {name: "Bituin", meaning: "Star", trivia: "Bituin represents hope and the aspiration to shine bright.", lifeBackground: "Bituin pursued her dream of becoming an astronaut, inspiring young girls to aim for the stars."},
+    {name: "Luningning", meaning: "Brightness", trivia: "Often used to connotate clarity and brilliance.", lifeBackground: "Luningning was known for her bright personality, leading many initiatives that focused on youth empowerment."},
+    {name: "Tala", meaning: "Star", trivia: "A popular name in folklore, Tala is often cited as a goddess of the morning and evening star.", lifeBackground: "Tala was a storyteller, captivating audiences with tales that celebrated Filipino culture and mythology."},
+    {name: "Reyna", meaning: "Queen", trivia: "Reyna reflects royal roots and strength.", lifeBackground: "As a leader in her community, Reyna worked tirelessly to empower women, leading workshops and mentorship programs."},
+    {name: "Amihan", meaning: "North wind", trivia: "Linked with nature and symbolizes change.", lifeBackground: "Amihan dedicated her life to environmental awareness, often leading locals in conservation techniques."},
+    {name: "Marikit", meaning: "Beautiful", trivia: "Often used to express admiration for beauty.", lifeBackground: "Marikit was a well-known artist, using her talent to portray the beauty of Filipino culture."},
+    {name: "Sampaguita", meaning: "National flower of Philippines", trivia: "Symbolizes purity, simplicity, and humility.", lifeBackground: "Growing up in a flower farm, Sampaguita learned the art of floral arrangement, gaining recognition for her beautiful creations."},
+    {name: "Makisig", meaning: "Elegant", trivia: "Popular among names that indicate grace and charm.", lifeBackground: "With a passion for fashion, Makisig became a designer, showcasing her collections within prestigious venues."}
+  ]
+};
+
+const lastNames = [
+  {name: "Santos", meaning: "Saints"},
+  {name: "Reyes", meaning: "Kings"},
+  {name: "Cruz", meaning: "Cross"},
+  {name: "Bautista", meaning: "Baptist"},
+  {name: "Dela Cruz", meaning: "Of the Cross"},
+  {name: "Makisig", meaning: "Handsome, gallant"},
+  {name: "Maganda", meaning: "Beautiful"},
+  {name: "Mendoza", meaning: "Cold mountain"},
+  {name: "Aguilar", meaning: "Eagle-like"},
+  {name: "Mabini", meaning: "Many bamboos"},
+  {name: "Ramos", meaning: "Branches"},
+  {name: "Luna", meaning: "Moon"},
+  {name: "Silangan", meaning: "East, Orient"},
+  {name: "Magmahal", meaning: "To love"}
+];
+
+let currentName = null;
+let selectedGender = 'any';
+let favorites = JSON.parse(localStorage.getItem('favoriteNames')) || [];
+
+document.querySelectorAll('.gender-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedGender = btn.dataset.gender;
+    generateName();
+  });
+});
+
+function animateText(element, text) {
+  element.innerHTML = '';
+  element.classList.remove('reveal');
+  
+  text.split('').forEach((char, index) => {
+    const span = document.createElement('span');
+    span.className = 'character';
+    span.textContent = char;
+    span.style.animationDelay = `${index * 0.1}s`;
+    element.appendChild(span);
+  });
+  
+  setTimeout(() => {
+    element.classList.add('reveal');
+  }, 100);
+}
+
+function generateFaceSymbol(gender) {
+  const svg = document.getElementById('nameSymbol');
+  svg.classList.remove('reveal');
+  
+  const faceColor = '#FFD6B1';
+  const hairColor = '#333333';
+  let symbolPath = '';
+  
+  if (gender === 'male') {
+    symbolPath = `
+      <!-- Face shape - more angular for male -->
+      <path d="M50 15 Q80 25 85 50 Q85 75 50 85 Q15 75 15 50 Q15 25 50 15" fill="${faceColor}"/>
+      
+      <!-- Hair - shorter, more structured -->
+      <path d="M15 45 C15 15, 50 5, 85 45 L85 35 C85 15, 50 0, 15 35 Z" fill="${hairColor}"/>
+      <path d="M25 25 L35 28 M45 22 L55 24 M65 25 L75 28" stroke="${hairColor}" stroke-width="3"/>
+      
+      <!-- Eyes - slightly larger, more angular -->
+      <path d="M35 40 L39 40" stroke="#333" stroke-width="3"/>
+      <path d="M61 40 L65 40" stroke="#333" stroke-width="3"/>
+      <path d="M31 38 Q35 36 39 38" fill="none" stroke="#333" stroke-width="1.5"/>
+      <path d="M61 38 Q65 36 69 38" fill="none" stroke="#333" stroke-width="1.5"/>
+      
+      <!-- Nose - more defined bridge -->
+      <path d="M48 40 Q50 45 52 40 L50 52" fill="none" stroke="#666" stroke-width="2"/>
+      
+      <!-- Mouth - straighter line -->
+      <path d="M40 60 Q50 62 60 60" fill="none" stroke="#333" stroke-width="2"/>
+      
+      <!-- Jaw line -->
+      <path d="M25 60 Q50 75 75 60" fill="none" stroke="#666" stroke-width="1"/>
+      
+      <!-- Ears -->
+      <path d="M15 45 C15 35, 20 30, 25 40" fill="none" stroke="${faceColor}" stroke-width="5"/>
+      <path d="M85 45 C85 35, 80 30, 75 40" fill="none" stroke="${faceColor}" stroke-width="5"/>
+    `;
+  } else {
+    symbolPath = `
+      <!-- Face shape - softer, more oval for female -->
+      <path d="M50 15 Q75 25 80 50 Q80 75 50 85 Q20 75 20 50 Q20 25 50 15" fill="${faceColor}"/>
+      
+      <!-- Hair - longer, flowing -->
+      <path d="M15 80 C15 20, 50 10, 85 80 L85 30 C85 10, 50 0, 15 30 Z" fill="${hairColor}"/>
+      <path d="M20 70 Q35 75 25 85 M75 70 Q65 75 75 85" fill="none" stroke="${hairColor}" stroke-width="3"/>
+      
+      <!-- Eyes - rounder, with lashes -->
+      <ellipse cx="35" cy="40" rx="4" ry="3" fill="#333"/>
+      <ellipse cx="65" cy="40" rx="4" ry="3" fill="#333"/>
+      <path d="M31 37 Q35 35 39 37" fill="none" stroke="#333" stroke-width="1.5"/>
+      <path d="M61 37 Q65 35 69 37" fill="none" stroke="#333" stroke-width="1.5"/>
+      
+      <!-- Eyelashes - more defined -->
+      <path d="M31 36 L30 33 M35 35 L35 32 M39 36 L40 33" stroke="#333" stroke-width="1"/>
+      <path d="M61 36 L60 33 M65 35 L65 32 M69 36 L70 33" stroke="#333" stroke-width="1"/>
+      
+      <!-- Nose - softer bridge -->
+      <path d="M48 42 Q50 45 52 42 L50 50" fill="none" stroke="#666" stroke-width="1.5"/>
+      
+      <!-- Mouth - fuller with slight smile -->
+      <path d="M40 58 Q50 62 60 58" fill="none" stroke="#333" stroke-width="2"/>
+      <path d="M40 58 Q50 61 60 58" fill="#FF9999" fill-opacity="0.6"/>
+      
+      <!-- Cheeks -->
+      <circle cx="30" cy="50" r="5" fill="#FFB6C1" fill-opacity="0.3"/>
+      <circle cx="70" cy="50" r="5" fill="#FFB6C1" fill-opacity="0.3"/>
+      
+      <!-- Ears with earrings -->
+      <path d="M15 45 C15 35, 20 30, 25 40" fill="none" stroke="${faceColor}" stroke-width="5"/>
+      <path d="M85 45 C85 35, 80 30, 75 40" fill="none" stroke="${faceColor}" stroke-width="5"/>
+      <circle cx="20" cy="45" r="2" fill="#FFD700"/>
+      <circle cx="80" cy="45" r="2" fill="#FFD700"/>
+    `;
+  }
+  
+  svg.innerHTML = symbolPath;
+  
+  setTimeout(() => {
+    svg.classList.add('reveal');
+  }, 200);
+}
+
+function generateName() {
+  // Reset animations
+  document.querySelectorAll('.name-part').forEach(el => el.classList.remove('reveal'));
+  document.getElementById('meaning').classList.remove('reveal');
+  document.getElementById('trivia').classList.remove('reveal');
+  document.getElementById('lifeBackground').classList.remove('reveal');
+  document.querySelector('.favorite-btn').classList.remove('reveal');
+
+  // Add photo handling
+  const photoElement = document.getElementById('namePhoto');
+  photoElement.style.display = 'none';
+  photoElement.classList.remove('reveal');
+
+  // Generate new name
+  let firstName;
+  let gender;
+  if (selectedGender === 'any') {
+    gender = Math.random() < 0.5 ? 'male' : 'female';
+    firstName = firstNames[gender][Math.floor(Math.random() * firstNames[gender].length)];
+  } else {
+    gender = selectedGender;
+    firstName = firstNames[gender][Math.floor(Math.random() * firstNames[gender].length)];
+  }
+  
+  const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+
+  currentName = {
+    firstName: firstName,
+    lastName: lastName,
+    fullName: `${firstName.name} ${lastName.name}`,
+    meaning: `${firstName.name}: ${firstName.meaning} | ${lastName.name}: ${lastName.meaning}`
+  };
+
+  // Generate face symbol before name animation
+  generateFaceSymbol(gender);
+  
+  // Animate first name
+  setTimeout(() => {
+    animateText(document.getElementById('firstName'), firstName.name);
+  }, 0);
+
+  // Animate last name
+  setTimeout(() => {
+    animateText(document.getElementById('lastName'), lastName.name);
+  }, 500);
+
+  // Handle photo display
+  if (firstName.photo) {
+    photoElement.src = firstName.photo;
+    photoElement.alt = firstName.photoAlt || `Photo representing the name ${firstName.name}`;
+    photoElement.style.display = 'block';
+    setTimeout(() => {
+      photoElement.classList.add('reveal');
+    }, 750); // Show after first name but before last name
+  } else {
+    photoElement.style.display = 'none';
+  }
+
+  // Animate meaning
+  setTimeout(() => {
+    const meaningElement = document.getElementById('meaning');
+    meaningElement.textContent = currentName.meaning;
+    meaningElement.classList.add('reveal');
+  }, 1000);
+
+  // Animate trivia
+  setTimeout(() => {
+    const triviaElement = document.getElementById('trivia');
+    triviaElement.classList.remove('reveal');
+    triviaElement.textContent = firstName.trivia || "This name has deep roots in Filipino culture.";
+    triviaElement.classList.add('reveal');
+  }, 1500);
+
+  // Animate life background after trivia
+  setTimeout(() => {
+    const lifeBackgroundElement = document.getElementById('lifeBackground');
+    lifeBackgroundElement.classList.remove('reveal');
+    lifeBackgroundElement.textContent = firstName.lifeBackground || "A life dedicated to family, community, and Filipino values.";
+    lifeBackgroundElement.classList.add('reveal');
+  }, 1750);
+
+  // Move favorite button animation to after life background
+  setTimeout(() => {
+    document.querySelector('.favorite-btn').classList.add('reveal');
+  }, 2250);
+}
+
+function addToFavorites() {
+  if (currentName && !favorites.some(fav => fav.fullName === currentName.fullName)) {
+    // Include photo information
+    currentName.photo = firstName.photo;
+    currentName.photoAlt = firstName.photoAlt;
+    favorites.push(currentName);
+    localStorage.setItem('favoriteNames', JSON.stringify(favorites));
+    updateFavoritesList();
+  }
+}
+
+function removeFromFavorites(index) {
+  favorites.splice(index, 1);
+  localStorage.setItem('favoriteNames', JSON.stringify(favorites));
+  updateFavoritesList();
+}
+
+function updateFavoritesList() {
+  const favoritesList = document.getElementById('favoritesList');
+  favoritesList.innerHTML = '';
+  
+  favorites.forEach((favorite, index) => {
+    const favoriteItem = document.createElement('div');
+    favoriteItem.className = 'favorite-item';
+    favoriteItem.innerHTML = `
+      ${favorite.fullName}
+      <button class="remove-favorite" onclick="removeFromFavorites(${index})">×</button>
+    `;
+    favoritesList.appendChild(favoriteItem);
+  });
+}
+
+// Initialize the name generator and favorites list
+generateName();
+updateFavoritesList();
+</script>
+</body></html>
